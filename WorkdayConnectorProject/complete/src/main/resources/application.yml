@@ -1,0 +1,9 @@
+auth:
+  username: ragarwal@informatica_pt1
+  password: 1qazXSW@
+  paswordType: http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText
+config:
+  version: v25.0
+  defaultUri: https://wd2-impl-services1.workday.com/ccx/service/informatica_pt1/Human_Resources/v25.0/
+
+
