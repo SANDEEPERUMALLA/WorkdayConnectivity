@@ -18,8 +18,8 @@ public class Prop1 {
     private String test1;
 
     @PostConstruct
-    void init(){
-        System.out.println("Prop1:+"+test+" "+test1);
+    void init() {
+
     }
 
 }

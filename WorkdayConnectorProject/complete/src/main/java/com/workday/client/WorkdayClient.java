@@ -47,6 +47,7 @@ public class WorkdayClient extends WebServiceGatewaySupport {
         System.out.println("Workday Client Initialized");
     }
 
+
     public GetWorkersResponseRootType getWorker(String workerId) {
         GetWorkersRequestType request = new GetWorkersRequestType();
         request.setVersion(propertyConfig.getConfig().getVersion());
@@ -75,11 +76,29 @@ public class WorkdayClient extends WebServiceGatewaySupport {
         return element.getValue();
     }
 
+    public GetOrganizationsResponseType getOrganisations(){
+
+        GetOrganizationsRequestType organizationsRequestType = new GetOrganizationsRequestType();
+
+        organizationsRequestType.setVersion("v25.0");
+
+
+        JAXBElement<GetOrganizationsResponseType> organizationsResponse = ( JAXBElement<GetOrganizationsResponseType> ) getWebServiceTemplate().marshalSendAndReceive(getDefaultUri(), organizationsRequestType, new WebServiceMessageCallback() {
+            @Override
+            public void doWithMessage(WebServiceMessage webServiceMessage) throws IOException, TransformerException {
+                util.addSecurityHeaderToMessage(webServiceMessage);
+            }
+        });
+
+        return organizationsResponse.getValue();
+
+    }
+
 
     public OrganizationType getOrganisation(String organisationId){
 
         IDType idType = new IDType();
-        idType.setSystemID("");
+        idType.setSystemID("WD-WID");
         idType.setValue(organisationId);
 
         ExternalIntegrationIDReferenceDataType externalIntegrationIDReferenceDataType = new ExternalIntegrationIDReferenceDataType();
