@@ -35,9 +35,11 @@ public class Application {
 
             List<String> metaDataList = new ArrayList<>();
 
-            util.getMetaData(PersonDataType.class, new MetaNode(PersonDataType.class.getSimpleName(),PersonDataType.class.getSimpleName()));
+            MetaNode personMetaNode = new MetaNode(PersonDataType.class.getSimpleName(), PersonDataType.class.getSimpleName());
+            util.getMetaData(PersonDataType.class, personMetaNode);
 
-            System.out.println(metaDataList);
+            System.out.println("PersonData MetaData" + personMetaNode);
+
 
             OrganizationType organization = workdayClient.getOrganisation("034e2640b4bd45f8b003dd349d6e4e6f");
 
@@ -51,6 +53,8 @@ public class Application {
 
             MetaNode rootNode = new MetaNode(OrganizationWWSType.class.getSimpleName(), OrganizationWWSType.class.getSimpleName());
             util.getMetaData(OrganizationWWSType.class, rootNode);
+
+            System.out.println("Organization MetaData");
             System.out.println(rootNode);
 
 

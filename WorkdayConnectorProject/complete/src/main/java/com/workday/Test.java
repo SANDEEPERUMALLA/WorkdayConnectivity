@@ -42,7 +42,19 @@ public class Test {
     public static void main(String args[]) throws JAXBException, ClassNotFoundException, NoSuchFieldException {
 
 
-        System.out.println(ClassUtils.isPrimitiveOrWrapper(ArrayList.class));
+
+       String [] array = new String[9];
+
+        System.out.println(array.getClass().getSimpleName());
+        System.out.println(array.getClass().getComponentType().getClass());
+
+        int[] array2 = new int[9];
+
+        System.out.println(array2.getClass().getSimpleName());
+        System.out.println(array2.getClass().getComponentType().getClass());
+
+
+        //System.out.println(Class.forName("Integer"));
 
 
         Util util = new Util();

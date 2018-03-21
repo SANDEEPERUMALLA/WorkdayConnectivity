@@ -27,7 +27,7 @@ public class Util {
     PropertyConfig propertyConfig;
 
 
-    public void addSecurityHeaderToMessage(WebServiceMessage message){
+    public void addSecurityHeaderToMessage(WebServiceMessage message) {
 
         SaajSoapMessage soapMessage = (SaajSoapMessage) message;
         SoapEnvelope envelope = soapMessage.getEnvelope();
@@ -39,7 +39,7 @@ public class Util {
             UsernameToken usernameToken = new UsernameToken();
 
             usernameToken.setUserName(propertyConfig.getAuth().getUsername());
-            usernameToken.setPassword(new Password(propertyConfig.getAuth().getPassword(),propertyConfig.getAuth().getPasswordType()));
+            usernameToken.setPassword(new Password(propertyConfig.getAuth().getPassword(), propertyConfig.getAuth().getPasswordType()));
 
             security.setUsernameToken(usernameToken);
 
@@ -51,36 +51,44 @@ public class Util {
         }
     }
 
-     public void getMetaData(Class clazz, MetaNode node) throws ClassNotFoundException {
+    public void getMetaData(Class clazz, MetaNode node){
 
         Field fields[] = clazz.getDeclaredFields();
 
         for (Field field : fields) {
 
             MetaNode tNode = new MetaNode(field.getName(), field.getType().getSimpleName());
-            if (ClassUtils.isPrimitiveOrWrapper(field.getType()) || field.getType().equals(String.class)) {
+            node.getNodeList().add(tNode);
+            if (!(ClassUtils.isPrimitiveOrWrapper(field.getType()) || field.getType().equals(String.class))) {
 
-                node.getNodeList().add(tNode);
-            } else if (field.getType().equals(List.class)) {
-                Class clazzz = getElementType(field);
-                MetaNode listTypeNode = new MetaNode(clazz.getSimpleName(), clazz.getSimpleName());
-                node.nodeList.add(tNode);
-                tNode.nodeList.add(listTypeNode);
-                getMetaData(clazzz, listTypeNode);
+                if (field.getType().getSimpleName().contains("[]")) {
 
-            } else {
-                node.nodeList.add(tNode);
-                getMetaData(field.getType(), tNode);
+                    String arrayType = field.getType().getComponentType().getSimpleName();
+                    Class clazzz = null;
+
+                    try {
+                        clazzz = Class.forName(arrayType);
+                        MetaNode arrayTypeNode = new MetaNode(clazzz.getSimpleName(), clazzz.getSimpleName());
+                        node.getNodeList().add(arrayTypeNode);
+                        getMetaData(clazzz, arrayTypeNode);
+                    } catch (ClassNotFoundException e) {
+                        System.out.println(e.getCause());
+                    }
+                } else if (field.getType().equals(List.class)) {
+                    Class clazzz = getElementType(field);
+                    MetaNode listTypeNode = new MetaNode(clazzz.getSimpleName(), clazzz.getSimpleName());
+                    tNode.nodeList.add(listTypeNode);
+                    getMetaData(clazzz, listTypeNode);
+
+                } else {
+                    getMetaData(field.getType(), tNode);
+                }
             }
-        }
 
+        }
     }
 
-
-
     private Class getElementType(Field field) {
-
-        List<String> l = new ArrayList<>();
 
         ParameterizedType stringListType = (ParameterizedType) field.getGenericType();
         Class<?> clazz = (Class<?>) stringListType.getActualTypeArguments()[0];

@@ -47,6 +47,6 @@ public class MetaNode {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE).append("NodesList", this.nodeList, true).append("MetaName", metaName).append("MetaType", metaType).toString();
+        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE).append("MetaName", metaName).append("MetaType", metaType).append("has", this.nodeList, true).toString();
     }
 }
