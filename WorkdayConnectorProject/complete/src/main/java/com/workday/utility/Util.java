@@ -1,6 +1,7 @@
 package com.workday.utility;
 
 import com.workday.config.PropertyConfig;
+import com.workday.model.MetaNode;
 import com.workday.security.Password;
 import com.workday.security.Security;
 import com.workday.security.UsernameToken;
@@ -15,6 +16,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -48,20 +51,41 @@ public class Util {
         }
     }
 
-    public void getMetaData(Class clazz, List<String> metaData) throws ClassNotFoundException {
-
+     public void getMetaData(Class clazz, MetaNode node) throws ClassNotFoundException {
 
         Field fields[] = clazz.getDeclaredFields();
 
         for (Field field : fields) {
-            if (ClassUtils.isPrimitiveOrWrapper(field.getType()) || field.getType().equals(String.class)) {
-                metaData.add(field.getName());
-            } else {
 
-                metaData.add(field.getName());
-                getMetaData(field.getType(), metaData);
+            MetaNode tNode = new MetaNode(field.getName(), field.getType().getSimpleName());
+            if (ClassUtils.isPrimitiveOrWrapper(field.getType()) || field.getType().equals(String.class)) {
+
+                node.getNodeList().add(tNode);
+            } else if (field.getType().equals(List.class)) {
+                Class clazzz = getElementType(field);
+                MetaNode listTypeNode = new MetaNode(clazz.getSimpleName(), clazz.getSimpleName());
+                node.nodeList.add(tNode);
+                tNode.nodeList.add(listTypeNode);
+                getMetaData(clazzz, listTypeNode);
+
+            } else {
+                node.nodeList.add(tNode);
+                getMetaData(field.getType(), tNode);
             }
         }
+
+    }
+
+
+
+    private Class getElementType(Field field) {
+
+        List<String> l = new ArrayList<>();
+
+        ParameterizedType stringListType = (ParameterizedType) field.getGenericType();
+        Class<?> clazz = (Class<?>) stringListType.getActualTypeArguments()[0];
+
+        return clazz;
 
     }
 }

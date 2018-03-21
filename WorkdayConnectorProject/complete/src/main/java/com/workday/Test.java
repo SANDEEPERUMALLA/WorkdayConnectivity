@@ -1,23 +1,30 @@
 package com.workday;
 
-import com.sun.xml.internal.bind.marshaller.NamespacePrefixMapper;
+import com.workday.model.MetaNode;
+import com.workday.model.WorkerIDType;
 import com.workday.security.Password;
 import com.workday.security.Security;
 import com.workday.security.UsernameToken;
+import com.workday.utility.Util;
 import org.apache.commons.lang3.ClassUtils;
-import workday_hr.wsdl.GetWorkersRequestType;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import workday_hr.wsdl.OrganizationWWSType;
 import workday_hr.wsdl.PersonDataType;
+import workday_hr.wsdl.WorkerObjectType;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static javax.xml.bind.JAXB.marshal;
+
+
 
 public class Test {
 
@@ -31,31 +38,19 @@ public class Test {
 //    }
 
 
-    static void getMetaData(Class clazz, List<String> metaData) throws ClassNotFoundException {
+
+    public static void main(String args[]) throws JAXBException, ClassNotFoundException, NoSuchFieldException {
 
 
-        Field fields[] = clazz.getDeclaredFields();
-
-        for (Field field : fields) {
-            if (ClassUtils.isPrimitiveOrWrapper(field.getType()) || field.getType().equals(String.class)) {
-                metaData.add(field.getName());
-            } else {
-
-                metaData.add(field.getName());
-                getMetaData(field.getType(), metaData);
-            }
-        }
-
-    }
-
-    public static void main(String args[]) throws JAXBException, ClassNotFoundException {
+        System.out.println(ClassUtils.isPrimitiveOrWrapper(ArrayList.class));
 
 
-        List<String> metaData = new ArrayList<>();
+        Util util = new Util();
 
-        getMetaData(PersonDataType.class, metaData);
+        MetaNode root = new MetaNode(WorkerObjectType.class.getSimpleName(), WorkerObjectType.class.getSimpleName());
+        util.getMetaData(WorkerObjectType.class, root);
 
-        System.out.println(metaData);
+        System.out.println(root);
 
 
         System.out.println(ClassUtils.isPrimitiveOrWrapper(String.class));

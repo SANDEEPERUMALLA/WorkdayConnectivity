@@ -2,6 +2,7 @@ package com.workday;
 
 
 import com.workday.client.WorkdayClient;
+import com.workday.model.MetaNode;
 import com.workday.security.Security;
 import com.workday.utility.Util;
 import org.apache.commons.lang3.ClassUtils;
@@ -34,7 +35,7 @@ public class Application {
 
             List<String> metaDataList = new ArrayList<>();
 
-            util.getMetaData(PersonDataType.class, metaDataList);
+            util.getMetaData(PersonDataType.class, new MetaNode(PersonDataType.class.getSimpleName(),PersonDataType.class.getSimpleName()));
 
             System.out.println(metaDataList);
 
@@ -47,6 +48,11 @@ public class Application {
             for (OrganizationWWSType organizationWWSType : organisations.getResponseData().getOrganization()) {
                 System.out.println(organizationWWSType.getOrganizationData().getName());
             }
+
+            MetaNode rootNode = new MetaNode(OrganizationWWSType.class.getSimpleName(), OrganizationWWSType.class.getSimpleName());
+            util.getMetaData(OrganizationWWSType.class, rootNode);
+            System.out.println(rootNode);
+
 
         };
     }
